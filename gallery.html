@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — Netflix</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="animations.css"/>
+  <link rel="stylesheet" href="responsive.css"/>
+  <style>
+    .gallery-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md); margin-bottom: var(--space-3xl); }
+    .gallery-filter-btn { padding: 8px 24px; background: rgba(255,255,255,0.05); border: 1px solid var(--clr-border); border-radius: var(--radius-full); color: var(--clr-text-muted); font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
+    .gallery-filter-btn:hover { background: rgba(255,255,255,0.1); color: var(--clr-white); }
+    .gallery-filter-btn.active { background: var(--grad-primary); color: var(--clr-white); border-color: transparent; }
+    
+    .masonry-grid { column-count: 3; column-gap: var(--space-md); padding-bottom: var(--space-4xl); }
+    .gallery-item { margin-bottom: var(--space-md); break-inside: avoid; border-radius: var(--radius-md); overflow: hidden; position: relative; cursor: pointer; }
+    .gallery-item img { width: 100%; display: block; transition: transform 0.5s ease; border-radius: var(--radius-md); }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-overlay { position: absolute; inset: 0; background: rgba(8,8,16,0.6); opacity: 0; display: flex; align-items: center; justify-content: center; transition: var(--transition-base); }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-icon { font-size: 2rem; color: white; background: rgba(255,255,255,0.2); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: var(--blur-sm); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .gallery-item:hover .gallery-icon { transform: scale(1); }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-logo">Netflix</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Netflix</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="gallery.html" class="nav-link active">Gallery</a>
+        <a href="products.html" class="nav-link">Catalog</a>
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="testimonials.html" class="nav-link">Reviews</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-search-btn" aria-label="Search">🔍</button>
+        <a href="signin.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">Join Free</a>
+      </div>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <nav class="mobile-nav">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="about.html" class="nav-link">ℹ️ About</a>
+    <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+    <a href="products.html" class="nav-link">🎬 Catalog</a>
+    <a href="features.html" class="nav-link">⭐ Features</a>
+    <a href="testimonials.html" class="nav-link">💬 Reviews</a>
+    <a href="contact.html" class="nav-link">📧 Contact</a>
+    <a href="faq.html" class="nav-link">❓ FAQ</a>
+    <div style="display:flex;gap:0.5rem;padding-top:0.5rem;">
+      <a href="signin.html" class="btn btn-secondary btn-sm" style="flex:1;text-align:center;">Sign In</a>
+      <a href="signup.html" class="btn btn-primary btn-sm" style="flex:1;text-align:center;">Join Free</a>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="container text-center page-hero-content">
+      <span class="page-hero-label reveal">Visuals</span>
+      <h1 class="page-hero-title reveal delay-1">Stunning Moments</h1>
+      <p class="page-hero-subtitle reveal delay-2 mx-auto">Explore high-resolution stills from our most acclaimed shows and original movies.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="gallery-filters reveal">
+        <button class="gallery-filter-btn active" data-filter="all">All</button>
+        <button class="gallery-filter-btn" data-filter="action">Action</button>
+        <button class="gallery-filter-btn" data-filter="scifi">Sci-Fi</button>
+        <button class="gallery-filter-btn" data-filter="romance">Romance</button>
+        <button class="gallery-filter-btn" data-filter="thriller">Thriller</button>
+      </div>
+
+      <div class="masonry-grid reveal delay-1">
+        <!-- Using provided images + colored placeholders for masonry -->
+        <div class="gallery-item" data-category="action">
+          <img src="assets/images/movie_action.jpg" alt="Action Scene"/>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="scifi">
+          <img src="assets/images/movie_scifi.jpg" alt="Sci Fi Scene"/>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="romance">
+          <img src="assets/images/movie_romance.jpg" alt="Romance Scene"/>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="thriller">
+          <img src="assets/images/movie_thriller.jpg" alt="Thriller Scene"/>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="scifi">
+          <img src="assets/images/featured_collection.jpg" alt="Sci Fi Scene 2"/>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <!-- Gradient Placeholders for varied heights to show masonry -->
+        <div class="gallery-item" data-category="action">
+          <div style="background:linear-gradient(45deg,#2e0811,#9f1239);height:400px;border-radius:12px;"></div>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="scifi">
+          <div style="background:linear-gradient(45deg,#0a0f1d,#1d4ed8);height:280px;border-radius:12px;"></div>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="romance">
+          <div style="background:linear-gradient(45deg,#1f1300,#d97706);height:320px;border-radius:12px;"></div>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+        <div class="gallery-item" data-category="thriller">
+          <div style="background:linear-gradient(45deg,#001400,#166534);height:380px;border-radius:12px;"></div>
+          <div class="gallery-overlay"><div class="gallery-icon">🔍</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <button class="lightbox-close">✕</button>
+    <button class="lightbox-prev">❮</button>
+    <button class="lightbox-next">❯</button>
+    <img src="" alt="Fullscreen" class="lightbox-img"/>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="font-size:2rem;display:inline-block;">LUMIX</a>
+          <p class="footer-brand-desc">Premium streaming platform delivering cinematic experiences in stunning quality. Watch anywhere, anytime.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
+            <a href="#" class="social-btn" aria-label="Instagram">📷</a>
+            <a href="#" class="social-btn" aria-label="Facebook">f</a>
+            <a href="#" class="social-btn" aria-label="YouTube">▶</a>
+            <a href="#" class="social-btn" aria-label="TikTok">♪</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Explore</div>
+          <div class="footer-links">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="gallery.html" class="footer-link">Gallery</a>
+            <a href="products.html" class="footer-link">Catalog</a>
+            <a href="features.html" class="footer-link">Features</a>
+            <a href="about.html" class="footer-link">About Us</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Support</div>
+          <div class="footer-links">
+            <a href="faq.html" class="footer-link">FAQ</a>
+            <a href="contact.html" class="footer-link">Contact</a>
+            <a href="#" class="footer-link">Help Center</a>
+            <a href="#" class="footer-link">Device Support</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2025 Netflix Streaming. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#" class="footer-bottom-link">Privacy</a>
+          <a href="#" class="footer-bottom-link">Terms</a>
+          <a href="#" class="footer-bottom-link">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

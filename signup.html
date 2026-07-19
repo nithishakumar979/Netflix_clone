@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up — Netflix</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="animations.css"/>
+  <link rel="stylesheet" href="responsive.css"/>
+  <style>
+    body { background: #050508; min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-layout { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; padding: var(--space-4xl) 20px; }
+    .auth-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+    .auth-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.2; filter: blur(3px); }
+    .auth-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,5,8,0.7) 0%, rgba(5,5,8,1) 100%); }
+    
+    .auth-container { position: relative; z-index: 1; width: 100%; max-width: 500px; background: rgba(0,0,0,0.6); backdrop-filter: var(--blur-lg); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-xl); padding: var(--space-3xl) var(--space-2xl); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+    
+    .auth-logo { text-align: center; margin-bottom: var(--space-2xl); }
+    .auth-logo a { font-size: 2.5rem; font-weight: 900; letter-spacing: 2px; color: white; text-decoration: none; }
+    .auth-logo span { color: var(--clr-primary); }
+    
+    .auth-title { font-size: 2rem; font-weight: 700; margin-bottom: 5px; color: white; text-align: center; }
+    .auth-subtitle { color: var(--clr-text-muted); text-align: center; margin-bottom: var(--space-xl); font-size: 0.95rem; }
+    
+    .auth-footer { margin-top: var(--space-xl); text-align: center; color: var(--clr-text-muted); font-size: 0.95rem; }
+    .auth-footer a { color: white; font-weight: 600; text-decoration: none; transition: var(--transition-fast); }
+    .auth-footer a:hover { color: var(--clr-primary); text-decoration: underline; }
+    
+    .divider { display: flex; align-items: center; margin: var(--space-lg) 0; color: var(--clr-text-dim); font-size: 0.9rem; }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+    .divider::before { margin-right: 15px; }
+    .divider::after { margin-left: 15px; }
+    
+    .social-btn-login { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); color: white; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
+    .social-btn-login:hover { background: rgba(255,255,255,0.1); }
+    
+    .password-reqs { margin-top: 10px; font-size: 0.8rem; color: var(--clr-text-dim); display: flex; flex-direction: column; gap: 4px; }
+    .req-item { display: flex; align-items: center; gap: 6px; }
+    .req-item::before { content: "○"; font-size: 0.6rem; }
+    
+  </style>
+</head>
+<body>
+
+  <div class="auth-layout">
+    <div class="auth-bg">
+      <img src="assets/images/featured_collection.jpg" alt="Background"/>
+      <div class="auth-overlay"></div>
+    </div>
+    
+    <div class="auth-container reveal">
+      <div class="auth-logo">
+        <a href="index.html">Netflix</a>
+      </div>
+      
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-subtitle">Start your 30-day free trial today.</p>
+      
+      <button class="social-btn-login" style="margin-bottom: var(--space-lg);">
+        <span style="font-size:1.2rem;">G</span> Sign up with Google
+      </button>
+      
+      <div class="divider">OR USE EMAIL</div>
+      
+      <form id="signup-form" class="form-group">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px;">
+          <input type="text" class="form-input" placeholder="First Name" required />
+          <input type="text" class="form-input" placeholder="Last Name" required />
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 15px;">
+          <input type="email" class="form-input" placeholder="Email Address" required />
+        </div>
+        
+        <div class="form-group">
+          <input type="password" class="form-input" placeholder="Create Password" required />
+          <div class="password-reqs">
+            <div class="req-item">At least 8 characters</div>
+            <div class="req-item">One uppercase & one number</div>
+          </div>
+        </div>
+        
+        <div style="margin: 20px 0; font-size: 0.85rem; color: var(--clr-text-muted); line-height: 1.5;">
+          By creating an account, you agree to our <a href="#" style="color:var(--clr-primary);">Terms of Service</a> and <a href="#" style="color:var(--clr-primary);">Privacy Policy</a>.
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-full" style="padding: 14px; font-size: 1.1rem;">Get Started</button>
+      </form>
+      
+      <div class="auth-footer">
+        Already have an account? <a href="signin.html">Sign in.</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

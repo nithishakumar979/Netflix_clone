@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catalog — Netflix</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="animations.css"/>
+  <link rel="stylesheet" href="responsive.css"/>
+  <style>
+    .catalog-layout { display: flex; gap: var(--space-xl); margin-top: var(--space-2xl); }
+    .catalog-sidebar { width: 250px; flex-shrink: 0; }
+    .catalog-main { flex: 1; }
+    
+    .filter-group { margin-bottom: var(--space-xl); }
+    .filter-title { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--space-md); color: var(--clr-white); }
+    .filter-list { display: flex; flex-direction: column; gap: 10px; }
+    .filter-checkbox { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--clr-text-muted); font-size: 0.9rem; transition: var(--transition-fast); }
+    .filter-checkbox:hover { color: var(--clr-primary); }
+    .filter-checkbox input { accent-color: var(--clr-primary); width: 16px; height: 16px; cursor: pointer; }
+    
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); margin-bottom: var(--space-3xl); }
+    .catalog-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl); padding-bottom: var(--space-md); border-bottom: 1px solid var(--clr-border); }
+    .catalog-sort { display: flex; align-items: center; gap: 10px; color: var(--clr-text-muted); font-size: 0.9rem; }
+    .sort-select { background: rgba(255,255,255,0.05); border: 1px solid var(--clr-border); color: white; padding: 6px 12px; border-radius: var(--radius-sm); outline: none; }
+    .sort-select option { background: var(--clr-bg-2); }
+    
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: var(--space-3xl); }
+    .page-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--clr-border); font-weight: 600; transition: var(--transition-fast); }
+    .page-btn:hover { border-color: var(--clr-primary); color: var(--clr-primary); }
+    .page-btn.active { background: var(--grad-primary); color: white; border-color: transparent; }
+    
+    @media (max-width: 1023px) {
+      .catalog-layout { flex-direction: column; }
+      .catalog-sidebar { width: 100%; display: flex; flex-wrap: wrap; gap: var(--space-lg); }
+      .filter-group { flex: 1; min-width: 200px; }
+      .products-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 767px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-logo">Netflix</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Netflix</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="gallery.html" class="nav-link">Gallery</a>
+        <a href="products.html" class="nav-link active">Catalog</a>
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="testimonials.html" class="nav-link">Reviews</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-search-btn" aria-label="Search">🔍</button>
+        <a href="signin.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">Join Free</a>
+      </div>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <nav class="mobile-nav">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="about.html" class="nav-link">ℹ️ About</a>
+    <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+    <a href="products.html" class="nav-link">🎬 Catalog</a>
+    <a href="features.html" class="nav-link">⭐ Features</a>
+    <a href="testimonials.html" class="nav-link">💬 Reviews</a>
+    <a href="contact.html" class="nav-link">📧 Contact</a>
+    <a href="faq.html" class="nav-link">❓ FAQ</a>
+    <div style="display:flex;gap:0.5rem;padding-top:0.5rem;">
+      <a href="signin.html" class="btn btn-secondary btn-sm" style="flex:1;text-align:center;">Sign In</a>
+      <a href="signup.html" class="btn btn-primary btn-sm" style="flex:1;text-align:center;">Join Free</a>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="container text-center page-hero-content">
+      <span class="page-hero-label reveal">Complete Collection</span>
+      <h1 class="page-hero-title reveal delay-1">Explore Titles</h1>
+      <p class="page-hero-subtitle reveal delay-2 mx-auto">Discover thousands of movies and series spanning across multiple genres and languages.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="catalog-layout">
+        
+        <!-- Sidebar Filters -->
+        <aside class="catalog-sidebar reveal delay-1">
+          <div class="filter-group">
+            <h3 class="filter-title">Genres</h3>
+            <div class="filter-list">
+              <label class="filter-checkbox"><input type="checkbox" checked/> All Genres</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Action & Adventure</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Sci-Fi & Fantasy</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Romance</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Thriller & Mystery</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Comedy</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Drama</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Documentaries</label>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <h3 class="filter-title">Release Year</h3>
+            <div class="filter-list">
+              <label class="filter-checkbox"><input type="checkbox"/> 2024 (New)</label>
+              <label class="filter-checkbox"><input type="checkbox"/> 2023</label>
+              <label class="filter-checkbox"><input type="checkbox"/> 2020-2022</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Classics</label>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <h3 class="filter-title">Quality</h3>
+            <div class="filter-list">
+              <label class="filter-checkbox"><input type="checkbox"/> 4K Ultra HD</label>
+              <label class="filter-checkbox"><input type="checkbox"/> HDR</label>
+              <label class="filter-checkbox"><input type="checkbox"/> Dolby Atmos</label>
+            </div>
+          </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="catalog-main">
+          <div class="catalog-topbar reveal delay-2">
+            <div>Showing <span style="color:white;font-weight:bold;">12</span> of 50,000+ titles</div>
+            <div class="catalog-sort">
+              Sort by:
+              <select class="sort-select">
+                <option>Trending Now</option>
+                <option>New Releases</option>
+                <option>Highest Rated</option>
+                <option>A-Z</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="products-grid">
+            <!-- 12 Items for the grid -->
+            <!-- 1 -->
+            <div class="movie-card reveal delay-3">
+              <img src="assets/images/movie_action.jpg" alt="Shadow Protocol"/>
+              <div class="movie-card-badge badge-trending">🔥 #1</div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Shadow Protocol</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>2h 18m</span>•<span>4K</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 2 -->
+            <div class="movie-card reveal delay-3">
+              <img src="assets/images/movie_scifi.jpg" alt="Celestial Wars"/>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Celestial Wars</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>2h 30m</span>•<span>4K</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 3 -->
+            <div class="movie-card movie-poster-1 reveal delay-4">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">👑</div><div class="movie-poster-label">The Monarch</div></div>
+              <div class="movie-card-badge badge-exclusive">Exclusive</div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">The Monarch</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>2h 5m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 4 -->
+            <div class="movie-card reveal delay-4">
+              <img src="assets/images/movie_thriller.jpg" alt="Dark Signal"/>
+              <div class="movie-card-badge badge-new">New</div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Dark Signal</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>1h 52m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 5 -->
+            <div class="movie-card movie-poster-2 reveal delay-5">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🌊</div><div class="movie-poster-label">Ocean Deep</div></div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Ocean Deep</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>1h 45m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 6 -->
+            <div class="movie-card reveal delay-5">
+              <img src="assets/images/movie_romance.jpg" alt="Golden Hour"/>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Golden Hour</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>1h 58m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 7 -->
+            <div class="movie-card movie-poster-5 reveal delay-5">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🏆</div><div class="movie-poster-label">Champions</div></div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Champions</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>1h 50m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 8 -->
+            <div class="movie-card movie-poster-7 reveal delay-5">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🌌</div><div class="movie-poster-label">Cosmos: Origins</div></div>
+              <div class="movie-card-badge badge-exclusive">Original</div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Cosmos: Origins</div>
+                <div class="movie-card-meta"><span>Series</span>•<span>4 Seasons</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 9 -->
+            <div class="movie-card movie-poster-4 reveal delay-6">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🌿</div><div class="movie-poster-label">Wild Eden</div></div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Wild Eden</div>
+                <div class="movie-card-meta"><span>Documentary</span>•<span>6 Eps</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 10 -->
+            <div class="movie-card movie-poster-9 reveal delay-6">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🔮</div><div class="movie-poster-label">Prism Falls</div></div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Prism Falls</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>2h 22m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 11 -->
+            <div class="movie-card movie-poster-10 reveal delay-6">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🤖</div><div class="movie-poster-label">Synthetic</div></div>
+              <div class="movie-card-badge badge-new">New</div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Synthetic</div>
+                <div class="movie-card-meta"><span>Series</span>•<span>2 Seasons</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+            <!-- 12 -->
+            <div class="movie-card movie-poster-6 reveal delay-6">
+              <div class="movie-poster-inner"><div class="movie-poster-icon">🌹</div><div class="movie-poster-label">Crimson Rose</div></div>
+              <div class="movie-card-overlay">
+                <div class="movie-card-title">Crimson Rose</div>
+                <div class="movie-card-meta"><span>2024</span>•<span>2h 10m</span></div>
+                <div class="movie-card-actions">
+                  <button class="movie-card-btn movie-card-btn-play">▶</button>
+                  <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagination reveal">
+            <button class="page-btn">❮</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span style="display:flex;align-items:flex-end;padding:0 5px;">...</span>
+            <button class="page-btn">42</button>
+            <button class="page-btn">❯</button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="font-size:2rem;display:inline-block;">LUMIX</a>
+          <p class="footer-brand-desc">Premium streaming platform delivering cinematic experiences in stunning quality. Watch anywhere, anytime.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
+            <a href="#" class="social-btn" aria-label="Instagram">📷</a>
+            <a href="#" class="social-btn" aria-label="Facebook">f</a>
+            <a href="#" class="social-btn" aria-label="YouTube">▶</a>
+            <a href="#" class="social-btn" aria-label="TikTok">♪</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Explore</div>
+          <div class="footer-links">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="gallery.html" class="footer-link">Gallery</a>
+            <a href="products.html" class="footer-link">Catalog</a>
+            <a href="features.html" class="footer-link">Features</a>
+            <a href="about.html" class="footer-link">About Us</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Support</div>
+          <div class="footer-links">
+            <a href="faq.html" class="footer-link">FAQ</a>
+            <a href="contact.html" class="footer-link">Contact</a>
+            <a href="#" class="footer-link">Help Center</a>
+            <a href="#" class="footer-link">Device Support</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2025 Netflix Streaming. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#" class="footer-bottom-link">Privacy</a>
+          <a href="#" class="footer-bottom-link">Terms</a>
+          <a href="#" class="footer-bottom-link">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

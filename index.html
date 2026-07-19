@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Netflix - Premium Streaming Platform. Watch unlimited movies, shows, and originals in stunning quality."/>
+  <title>Netflix — Premium Streaming Platform</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="animations.css"/>
+  <link rel="stylesheet" href="responsive.css"/>
+  <style>
+    /* ===== HOME-SPECIFIC STYLES ===== */
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: #050508;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+      filter: blur(2px) brightness(0.7);
+    }
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(5,5,8,0.95) 40%, rgba(5,5,8,0.4) 100%),
+                  linear-gradient(to top, rgba(5,5,8,0.9) 0%, transparent 60%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      padding-top: calc(var(--nav-height) + 2rem);
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.35);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--clr-primary);
+      margin-bottom: var(--space-lg);
+      animation: fadeInDown 0.8s ease 0.2s both;
+    }
+    .hero-title {
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--clr-white);
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--clr-text-muted);
+      margin-top: var(--space-lg);
+      line-height: 1.7;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: var(--space-md);
+      margin-top: var(--space-xl);
+      animation: fadeInUp 0.8s ease 0.8s both;
+    }
+    .hero-meta {
+      display: flex; align-items: center; gap: var(--space-xl);
+      margin-top: var(--space-2xl);
+      animation: fadeInUp 0.8s ease 1s both;
+    }
+    .hero-meta-item { text-align: center; }
+    .hero-meta-value { font-size: 1.5rem; font-weight: 800; color: var(--clr-white); }
+    .hero-meta-label { font-size: 0.75rem; color: var(--clr-text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--clr-text-dim); font-size: 0.75rem; letter-spacing: 0.1em;
+      animation: fadeIn 1s ease 1.5s both;
+      z-index: 1;
+    }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--clr-primary), transparent); animation: float 2s ease-in-out infinite; }
+
+    /* Hero right floating cards */
+    .hero-cards {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex; gap: var(--space-md);
+      z-index: 1;
+      padding-top: var(--nav-height);
+    }
+    .hero-card-col { display: flex; flex-direction: column; gap: var(--space-md); }
+    .hero-card-col:nth-child(2) { margin-top: 3rem; }
+    .hero-mini-card {
+      width: 140px;
+      aspect-ratio: 2/3;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      animation: float var(--d, 5s) ease-in-out infinite;
+      animation-delay: var(--dl, 0s);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .hero-mini-card:hover { transform: scale(1.05); }
+
+    /* Trending Ticker */
+    .trending-bar {
+      background: rgba(139,92,246,0.08);
+      border-top: 1px solid rgba(139,92,246,0.2);
+      border-bottom: 1px solid rgba(139,92,246,0.2);
+      padding: 10px 0;
+      overflow: hidden;
+    }
+    .trending-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--clr-accent);
+      white-space: nowrap;
+      padding: 0 var(--space-xl);
+    }
+    .trending-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0 var(--space-xl);
+      font-size: 0.85rem; color: var(--clr-text-muted);
+      white-space: nowrap;
+    }
+    .trending-item .num { color: var(--clr-primary); font-weight: 700; font-size: 0.8rem; }
+
+    /* Featured Categories */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-md);
+    }
+    .category-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    .category-card:hover { transform: scale(1.03); }
+    .category-card-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.5s ease;
+    }
+    .category-card:hover .category-card-bg { transform: scale(1.08); }
+    .category-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,5,8,0.95) 0%, rgba(5,5,8,0.2) 60%, transparent 100%);
+    }
+    .category-card-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: var(--space-lg);
+    }
+    .category-icon { font-size: 2rem; margin-bottom: 8px; }
+    .category-name { font-size: 1.1rem; font-weight: 700; }
+    .category-count { font-size: 0.8rem; color: var(--clr-text-dim); margin-top: 4px; }
+
+    /* Content rows */
+    .home-content { padding: var(--space-4xl) 0; background: var(--clr-bg); }
+
+    /* Promo Banner */
+    .promo-section {
+      margin: var(--space-4xl) 0;
+      background: linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(6,182,212,0.15) 50%, rgba(236,72,153,0.15) 100%);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+    }
+    .promo-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      min-height: 380px;
+    }
+    .promo-content { padding: clamp(2rem,5vw,4rem); position: relative; z-index: 1; }
+    .promo-badge { display: inline-block; padding: 4px 14px; background: var(--grad-gold); color: #1a0a00; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-lg); }
+    .promo-title { font-size: clamp(1.8rem,4vw,3rem); font-weight: 900; line-height: 1.15; }
+    .promo-subtitle { color: var(--clr-text-muted); margin-top: var(--space-md); margin-bottom: var(--space-xl); }
+    .promo-price { font-size: 0.9rem; color: var(--clr-text-dim); margin-top: var(--space-sm); }
+    .promo-image {
+      position: relative;
+      height: 100%;
+      min-height: 380px;
+    }
+    .promo-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.8;
+    }
+    .promo-image-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(8,8,16,0.6) 0%, transparent 50%); }
+
+    /* Newsletter */
+    .newsletter-wrap { padding: var(--space-4xl) 0; }
+
+    /* Testimonials preview */
+    .review-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+    .review-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      transition: var(--transition-base);
+    }
+    .review-card:hover { border-color: rgba(139,92,246,0.3); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
+    .review-header { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); }
+    .review-name { font-weight: 600; font-size: 0.95rem; }
+    .review-role { font-size: 0.78rem; color: var(--clr-text-dim); }
+    .review-text { color: var(--clr-text-muted); font-size: 0.9rem; line-height: 1.7; font-style: italic; }
+    .review-text::before { content: "\201C"; font-size: 2rem; color: var(--clr-primary); line-height: 0; vertical-align: -0.5em; margin-right: 4px; }
+
+    /* Plans */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+    .plan-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      transition: var(--transition-base);
+      position: relative;
+      overflow: hidden;
+    }
+    .plan-card.popular {
+      border-color: var(--clr-primary);
+      background: linear-gradient(145deg, rgba(139,92,246,0.12) 0%, rgba(6,182,212,0.06) 100%);
+    }
+    .plan-card.popular::before {
+      content: "Most Popular";
+      position: absolute;
+      top: 16px; right: -30px;
+      background: var(--grad-primary);
+      color: white;
+      font-size: 0.72rem; font-weight: 700;
+      padding: 4px 40px;
+      transform: rotate(45deg);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .plan-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-glow); }
+    .plan-name { font-size: 1rem; font-weight: 700; color: var(--clr-text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .plan-price { font-size: 3rem; font-weight: 900; margin: var(--space-md) 0; line-height: 1; }
+    .plan-price span { font-size: 1rem; font-weight: 400; color: var(--clr-text-muted); }
+    .plan-features { display: flex; flex-direction: column; gap: 10px; margin: var(--space-xl) 0; }
+    .plan-feature { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--clr-text-muted); }
+    .plan-feature .check { color: var(--clr-success); font-size: 0.9rem; }
+    .plan-feature .cross { color: var(--clr-text-dim); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-logo">Netflix</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Netflix</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="gallery.html" class="nav-link">Gallery</a>
+        <a href="products.html" class="nav-link">Catalog</a>
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="testimonials.html" class="nav-link">Reviews</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-search-btn" aria-label="Search">🔍</button>
+        <a href="signin.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">Join Free</a>
+      </div>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <nav class="mobile-nav">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="about.html" class="nav-link">ℹ️ About</a>
+    <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+    <a href="products.html" class="nav-link">🎬 Catalog</a>
+    <a href="features.html" class="nav-link">⭐ Features</a>
+    <a href="testimonials.html" class="nav-link">💬 Reviews</a>
+    <a href="contact.html" class="nav-link">📧 Contact</a>
+    <a href="faq.html" class="nav-link">❓ FAQ</a>
+    <div style="display:flex;gap:0.5rem;padding-top:0.5rem;">
+      <a href="signin.html" class="btn btn-secondary btn-sm" style="flex:1;text-align:center;">Sign In</a>
+      <a href="signup.html" class="btn btn-primary btn-sm" style="flex:1;text-align:center;">Join Free</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero-section" id="hero">
+    <div class="hero-bg">
+      <img src="assets/images/hero_banner.jpg" alt="Netflix Hero" loading="eager"/>
+      <div class="hero-bg-overlay"></div>
+    </div>
+
+    <!-- Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span>🔴</span> Now Streaming — New Originals Every Week
+        </div>
+        <h1 class="hero-title">
+          Cinema Without<br/>
+          <span class="highlight">Boundaries.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Stream thousands of movies, exclusive originals, and hit TV shows in stunning 4K HDR. Your premium entertainment universe awaits.
+        </p>
+        <div class="hero-actions">
+          <a href="signup.html" class="btn btn-primary btn-lg">
+            <span>▶</span> Start Watching Free
+          </a>
+          <a href="products.html" class="btn btn-secondary btn-lg">
+            Browse Catalog
+          </a>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <div class="hero-meta-value">50K+</div>
+            <div class="hero-meta-label">Titles</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="hero-meta-value">4K</div>
+            <div class="hero-meta-label">Ultra HD</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="hero-meta-value">190+</div>
+            <div class="hero-meta-label">Countries</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating mini cards on right -->
+    <div class="hero-cards">
+      <div class="hero-card-col">
+        <div class="hero-mini-card movie-poster-1" style="--d:5s;--dl:0s;">
+          <div class="movie-poster-inner"><div class="movie-poster-icon">🔥</div><div class="movie-poster-label">Inferno</div></div>
+        </div>
+        <div class="hero-mini-card" style="--d:6s;--dl:1s;overflow:hidden;">
+          <img src="assets/images/movie_action.jpg" alt="Action" style="width:100%;height:100%;object-fit:cover;"/>
+        </div>
+        <div class="hero-mini-card movie-poster-7" style="--d:5.5s;--dl:2s;">
+          <div class="movie-poster-inner"><div class="movie-poster-icon">🌌</div><div class="movie-poster-label">Cosmos</div></div>
+        </div>
+      </div>
+      <div class="hero-card-col">
+        <div class="hero-mini-card" style="--d:6s;--dl:0.5s;overflow:hidden;">
+          <img src="assets/images/movie_romance.jpg" alt="Romance" style="width:100%;height:100%;object-fit:cover;"/>
+        </div>
+        <div class="hero-mini-card movie-poster-5" style="--d:5s;--dl:1.5s;">
+          <div class="movie-poster-inner"><div class="movie-poster-icon">⚔️</div><div class="movie-poster-label">Kingdom</div></div>
+        </div>
+        <div class="hero-mini-card" style="--d:6.5s;--dl:2.5s;overflow:hidden;">
+          <img src="assets/images/movie_scifi.jpg" alt="Sci-fi" style="width:100%;height:100%;object-fit:cover;"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>SCROLL</span>
+    </div>
+  </section>
+
+  <!-- ===== TRENDING TICKER ===== -->
+  <div class="trending-bar">
+    <div class="ticker-wrap">
+      <div class="ticker-inner">
+        <span class="trending-label">🔥 Trending Now</span>
+        <span class="trending-item"><span class="num">#1</span> Shadow Protocol</span>
+        <span class="trending-item"><span class="num">#2</span> The Last Signal</span>
+        <span class="trending-item"><span class="num">#3</span> Neon Requiem</span>
+        <span class="trending-item"><span class="num">#4</span> Celestial Wars</span>
+        <span class="trending-item"><span class="num">#5</span> Deep Blue</span>
+        <span class="trending-item"><span class="num">#6</span> The Midas Touch</span>
+        <span class="trending-item"><span class="num">#7</span> Prism Falls</span>
+        <span class="trending-item"><span class="num">#8</span> Echoes of Light</span>
+        <!-- Duplicate for seamless loop -->
+        <span class="trending-label">🔥 Trending Now</span>
+        <span class="trending-item"><span class="num">#1</span> Shadow Protocol</span>
+        <span class="trending-item"><span class="num">#2</span> The Last Signal</span>
+        <span class="trending-item"><span class="num">#3</span> Neon Requiem</span>
+        <span class="trending-item"><span class="num">#4</span> Celestial Wars</span>
+        <span class="trending-item"><span class="num">#5</span> Deep Blue</span>
+        <span class="trending-item"><span class="num">#6</span> The Midas Touch</span>
+        <span class="trending-item"><span class="num">#7</span> Prism Falls</span>
+        <span class="trending-item"><span class="num">#8</span> Echoes of Light</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FEATURED CATEGORIES ===== -->
+  <section class="section" style="background:var(--clr-bg-2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Genres</span>
+        <h2 class="section-title">Explore Every World</h2>
+        <p class="section-subtitle">From edge-of-your-seat thrillers to heartwarming dramas — your universe of stories.</p>
+      </div>
+      <div class="categories-grid">
+        <div class="category-card reveal delay-1">
+          <div class="category-card-bg movie-poster-3" style="position:absolute;inset:0;"></div>
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-icon">💥</div>
+            <div class="category-name">Action</div>
+            <div class="category-count">2,840 titles</div>
+          </div>
+        </div>
+        <div class="category-card reveal delay-2">
+          <div class="category-card-bg" style="position:absolute;inset:0;overflow:hidden;"><img src="assets/images/movie_scifi.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-icon">🚀</div>
+            <div class="category-name">Sci-Fi</div>
+            <div class="category-count">1,650 titles</div>
+          </div>
+        </div>
+        <div class="category-card reveal delay-3">
+          <div class="category-card-bg" style="position:absolute;inset:0;overflow:hidden;"><img src="assets/images/movie_romance.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-icon">❤️</div>
+            <div class="category-name">Romance</div>
+            <div class="category-count">3,210 titles</div>
+          </div>
+        </div>
+        <div class="category-card reveal delay-4">
+          <div class="category-card-bg" style="position:absolute;inset:0;overflow:hidden;"><img src="assets/images/movie_thriller.jpg" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-icon">🕵️</div>
+            <div class="category-name">Thriller</div>
+            <div class="category-count">1,920 titles</div>
+          </div>
+        </div>
+        <div class="category-card reveal delay-5">
+          <div class="category-card-bg movie-poster-4" style="position:absolute;inset:0;"></div>
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-icon">😂</div>
+            <div class="category-name">Comedy</div>
+            <div class="category-count">2,100 titles</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTENT ROWS ===== -->
+  <section class="home-content">
+    <div class="container">
+
+      <!-- Trending Now -->
+      <div class="content-row reveal">
+        <div class="content-row-header">
+          <div class="content-row-title">🔥 Trending Now</div>
+          <a href="products.html" class="content-row-link">View All →</a>
+        </div>
+        <div class="card-scroller">
+          <div class="movie-card">
+            <img src="assets/images/movie_action.jpg" alt="Shadow Protocol" loading="lazy"/>
+            <div class="movie-card-badge badge-trending">🔥 #1</div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Shadow Protocol</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>2h 18m</span>•<span>4K</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play" title="Play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn" title="Add to list">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card">
+            <img src="assets/images/movie_thriller.jpg" alt="Dark Signal" loading="lazy"/>
+            <div class="movie-card-badge badge-new">New</div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Dark Signal</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>1h 52m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-1">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">👑</div><div class="movie-poster-label">The Monarch</div></div>
+            <div class="movie-card-badge badge-exclusive">Exclusive</div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">The Monarch</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>2h 5m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card">
+            <img src="assets/images/movie_scifi.jpg" alt="Celestial" loading="lazy"/>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Celestial Wars</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>2h 30m</span>•<span>4K</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-2">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🌊</div><div class="movie-poster-label">Ocean Deep</div></div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Ocean Deep</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>1h 45m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-6">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🌹</div><div class="movie-poster-label">Crimson Rose</div></div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Crimson Rose</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>2h 10m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card">
+            <img src="assets/images/movie_romance.jpg" alt="Golden Hour" loading="lazy"/>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Golden Hour</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>1h 58m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-9">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🔮</div><div class="movie-poster-label">Prism Falls</div></div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Prism Falls</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>2h 22m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LUMIX Originals -->
+      <div class="content-row reveal">
+        <div class="content-row-header">
+          <div class="content-row-title">⭐ LUMIX Originals</div>
+          <a href="products.html" class="content-row-link">View All →</a>
+        </div>
+        <div class="card-scroller">
+          <div class="movie-card movie-poster-7">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🌌</div><div class="movie-poster-label">Cosmos: Origins</div></div>
+            <div class="movie-card-badge badge-exclusive">Original</div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Cosmos: Origins</div>
+              <div class="movie-card-meta"><span>Series</span>•<span>4 Seasons</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card">
+            <img src="assets/images/featured_collection.jpg" alt="The Collection" loading="lazy"/>
+            <div class="movie-card-badge badge-exclusive">Original</div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">The Collection</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>Miniseries</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-10">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🤖</div><div class="movie-poster-label">Synthetic</div></div>
+            <div class="movie-card-badge badge-new">New</div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Synthetic</div>
+              <div class="movie-card-meta"><span>Series</span>•<span>2 Seasons</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-4">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🌿</div><div class="movie-poster-label">Wild Eden</div></div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Wild Eden</div>
+              <div class="movie-card-meta"><span>Documentary</span>•<span>6 Eps</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-5">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🏆</div><div class="movie-poster-label">Champions</div></div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Champions</div>
+              <div class="movie-card-meta"><span>2024</span>•<span>1h 50m</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+          <div class="movie-card movie-poster-6">
+            <div class="movie-poster-inner"><div class="movie-poster-icon">🦋</div><div class="movie-poster-label">Metamorph</div></div>
+            <div class="movie-card-overlay">
+              <div class="movie-card-title">Metamorph</div>
+              <div class="movie-card-meta"><span>Series</span>•<span>3 Seasons</span></div>
+              <div class="movie-card-actions">
+                <button class="movie-card-btn movie-card-btn-play">▶</button>
+                <button class="movie-card-btn movie-card-btn-add wishlist-btn">🤍</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== PROMO BANNER ===== -->
+  <section style="background:var(--clr-bg-2);padding:0 0 var(--space-4xl);">
+    <div class="container">
+      <div class="promo-section reveal">
+        <div class="promo-inner">
+          <div class="promo-content">
+            <div class="promo-badge">Limited Offer</div>
+            <h2 class="promo-title">Get 3 Months Free<br/>Premium Access</h2>
+            <p class="promo-subtitle">Unlock all Netflix Originals, 4K streaming on 4 screens, and offline downloads. Cancel anytime.</p>
+            <a href="signup.html" class="btn btn-primary btn-lg">Claim Offer →</a>
+            <p class="promo-price">Then ₹499/month. No commitment.</p>
+          </div>
+          <div class="promo-image">
+            <img src="assets/images/featured_collection.jpg" alt="Premium Collection"/>
+            <div class="promo-image-overlay"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section class="section" style="background:var(--clr-bg);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">By the Numbers</span>
+        <h2 class="section-title">Trusted by Millions</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card reveal delay-1">
+          <div class="stat-number" data-count="50" data-suffix="K+">0</div>
+          <div class="stat-label">Movies & Shows</div>
+        </div>
+        <div class="stat-card reveal delay-2">
+          <div class="stat-number" data-count="42" data-suffix="M+">0</div>
+          <div class="stat-label">Active Subscribers</div>
+        </div>
+        <div class="stat-card reveal delay-3">
+          <div class="stat-number" data-count="190" data-suffix="+">0</div>
+          <div class="stat-label">Countries</div>
+        </div>
+        <div class="stat-card reveal delay-4">
+          <div class="stat-number" data-count="4.9" data-suffix="★" data-decimals="1">0</div>
+          <div class="stat-label">Average Rating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING PLANS ===== -->
+  <section class="section" style="background:var(--clr-bg-2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Pricing</span>
+        <h2 class="section-title">Choose Your Plan</h2>
+        <p class="section-subtitle">All plans include a 30-day free trial. No credit card required.</p>
+      </div>
+      <div class="plans-grid">
+        <div class="plan-card reveal delay-1">
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">₹149<span>/mo</span></div>
+          <div class="plan-features">
+            <div class="plan-feature"><span class="check">✓</span> Full HD 1080p</div>
+            <div class="plan-feature"><span class="check">✓</span> 1 Screen at a time</div>
+            <div class="plan-feature"><span class="check">✓</span> 10,000+ Titles</div>
+            <div class="plan-feature"><span class="cross">✗</span> Offline Downloads</div>
+            <div class="plan-feature"><span class="cross">✗</span> LUMIX Originals</div>
+          </div>
+          <a href="signup.html" class="btn btn-outline w-full">Get Started</a>
+        </div>
+        <div class="plan-card popular reveal delay-2">
+          <div class="plan-name">Premium</div>
+          <div class="plan-price">₹499<span>/mo</span></div>
+          <div class="plan-features">
+            <div class="plan-feature"><span class="check">✓</span> 4K Ultra HD + HDR</div>
+            <div class="plan-feature"><span class="check">✓</span> 4 Screens at a time</div>
+            <div class="plan-feature"><span class="check">✓</span> 50,000+ Titles</div>
+            <div class="plan-feature"><span class="check">✓</span> Unlimited Downloads</div>
+            <div class="plan-feature"><span class="check">✓</span> All LUMIX Originals</div>
+          </div>
+          <a href="signup.html" class="btn btn-primary w-full">Start Free Trial</a>
+        </div>
+        <div class="plan-card reveal delay-3">
+          <div class="plan-name">Family</div>
+          <div class="plan-price">₹799<span>/mo</span></div>
+          <div class="plan-features">
+            <div class="plan-feature"><span class="check">✓</span> 4K Ultra HD + Dolby</div>
+            <div class="plan-feature"><span class="check">✓</span> 6 Screens at a time</div>
+            <div class="plan-feature"><span class="check">✓</span> 6 Profiles + Kids Mode</div>
+            <div class="plan-feature"><span class="check">✓</span> Unlimited Downloads</div>
+            <div class="plan-feature"><span class="check">✓</span> Priority Support</div>
+          </div>
+          <a href="signup.html" class="btn btn-outline w-full">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REVIEWS ===== -->
+  <section class="section" style="background:var(--clr-bg);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Testimonials</span>
+        <h2 class="section-title">What Our Members Say</h2>
+      </div>
+      <div class="review-cards">
+        <div class="review-card reveal delay-1">
+          <div class="review-header">
+            <div class="avatar-placeholder">AR</div>
+            <div>
+              <div class="review-name">Arjun Reddy</div>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-text">LUMIX has completely transformed my movie nights. The 4K quality is breathtaking and the content library is absolutely massive. Best streaming platform period.</p>
+        </div>
+        <div class="review-card reveal delay-2">
+          <div class="review-header">
+            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#ec4899,#f97316)">PS</div>
+            <div>
+              <div class="review-name">Priya Sharma</div>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-text">The Netflix Originals are genuinely world-class. I canceled two other subscriptions because Netflix has everything I need. Absolutely worth every rupee.</p>
+        </div>
+        <div class="review-card reveal delay-3">
+          <div class="review-header">
+            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#06b6d4,#10b981)">RK</div>
+            <div>
+              <div class="review-name">Rahul Kumar</div>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-text">Smooth interface, zero buffering even at 4K, and the recommendation algorithm is scary good. LUMIX knows what I want before I do!</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:2.5rem;" class="reveal">
+        <a href="testimonials.html" class="btn btn-outline">Read All Reviews</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEWSLETTER ===== -->
+  <section class="section" style="background:var(--clr-bg-2);">
+    <div class="container">
+      <div class="newsletter-section reveal">
+        <span class="section-label">Stay Updated</span>
+        <h2 class="section-title" style="margin-top:0.75rem;">Never Miss a Premiere</h2>
+        <p class="section-subtitle">Get exclusive early access, release alerts, and member-only offers delivered to your inbox.</p>
+        <form class="newsletter-form" id="newsletter-home">
+          <input type="email" class="newsletter-input" placeholder="Enter your email address" required/>
+          <button type="submit" class="btn btn-primary">Subscribe Free →</button>
+        </form>
+        <p style="font-size:0.8rem;color:var(--clr-text-dim);margin-top:1rem;">No spam. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="font-size:2rem;display:inline-block;">Netflix</a>
+          <p class="footer-brand-desc">Premium streaming platform delivering cinematic experiences in stunning quality. Watch anywhere, anytime.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
+            <a href="#" class="social-btn" aria-label="Instagram">📷</a>
+            <a href="#" class="social-btn" aria-label="Facebook">f</a>
+            <a href="#" class="social-btn" aria-label="YouTube">▶</a>
+            <a href="#" class="social-btn" aria-label="TikTok">♪</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Explore</div>
+          <div class="footer-links">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="gallery.html" class="footer-link">Gallery</a>
+            <a href="products.html" class="footer-link">Catalog</a>
+            <a href="features.html" class="footer-link">Features</a>
+            <a href="about.html" class="footer-link">About Us</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Support</div>
+          <div class="footer-links">
+            <a href="faq.html" class="footer-link">FAQ</a>
+            <a href="contact.html" class="footer-link">Contact</a>
+            <a href="#" class="footer-link">Help Center</a>
+            <a href="#" class="footer-link">Device Support</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2025 Netflix Streaming. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#" class="footer-bottom-link">Privacy</a>
+          <a href="#" class="footer-bottom-link">Terms</a>
+          <a href="#" class="footer-bottom-link">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Newsletter form on home page
+    document.getElementById("newsletter-home").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const input = this.querySelector(".newsletter-input");
+      if (input.value) {
+        showToast("You are subscribed to Netflix Insider! 🎬", "🎉");
+        input.value = "";
+      }
+    });
+  </script>
+</body>
+</html>
